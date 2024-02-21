@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+  loginSignupApi-pg:
+    image: bitnami/postgresql:latest
+    ports: 
+      - 5432:5432
+    environment:
+      - POSTGRESQL_USERNAME=loginsignupapi
+      - POSTGRESQL_PASSWORD=loginsignupapi
+      - POSTGRESQL_DATABASE=loginsignupapipg
