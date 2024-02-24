@@ -5,7 +5,7 @@
 - Fastify
 - Prisma
 - PostgreSQL
-- JWT
+- JWTdocker ps
 
 ## Functional Requirements
 
@@ -16,6 +16,7 @@
 - [ ] User can login on your session
 - [ ] Must be able to authenticate user on login
 - [ ] Must be able to get user profile in session
+- [ ] Must be able to get all users
 - [ ] User can edit your profile datas
 - [ ] User can delete your account
 
@@ -26,3 +27,4 @@
 - [ x ] User password must be encrypted on the signup time
 - [ ] Use JTW like authetication strategy
 - [ x ] User data must be registered in a PostgreSQL data bank
+- [ ] Clean code and Best practices, SOLID principles and Design Patters
