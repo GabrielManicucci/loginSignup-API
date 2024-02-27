@@ -1,18 +1,18 @@
 import { prisma } from '@/lib/prisma'
-import { RegisterbodySchema } from '@/types/user'
+import { registerbodySchema } from '@/types/user'
 import { hash } from 'bcrypt'
 import { FastifyReply, FastifyRequest } from 'fastify'
 
-export async function Register(
+export async function RegisterUser(
   request: FastifyRequest,
   response: FastifyReply,
 ) {
-  const userData = RegisterbodySchema.parse(request.body)
+  const requestUserData = registerbodySchema.parse(request.body)
 
   try {
     const existingUser = await prisma.user.findUnique({
       where: {
-        fullName: userData.fullName,
+        fullName: requestUserData.fullName,
       },
     })
     if (existingUser)
@@ -20,28 +20,26 @@ export async function Register(
 
     const existingEmail = await prisma.user.findUnique({
       where: {
-        email: userData.email,
+        email: requestUserData.email,
       },
     })
     if (existingEmail)
       return response.code(409).send({ error: 'Esse email já existe' })
 
-    const hashedPassword = await hash(userData.password, 6)
-    const hashedCPF = await hash(userData.cpf, 6)
+    const hashedPassword = await hash(requestUserData.password, 6)
+    const hashedCPF = await hash(requestUserData.cpf, 6)
 
     const newUser = await prisma.user.create({
       data: {
-        ...userData,
+        ...requestUserData,
         cpf: hashedCPF,
         password: hashedPassword,
       },
     })
     return response.code(201).send(newUser)
   } catch (err) {
-    if (err) {
-      console.log(err)
-      return response.code(404).send({ error: `${err}` })
-    }
+    console.log(err)
+    return response.code(404).send({ error: `${err}` })
   }
 }
 
@@ -61,13 +59,13 @@ export async function GetAllUsers(
 }
 
 export async function GetUSer(request: FastifyRequest, response: FastifyReply) {
-  const userId = request.params.email
+  const userEmail = request.params.email
 
   try {
-    const allUsers = await prisma.user.findUnique({
-      where: { email: userId },
+    const user = await prisma.user.findUnique({
+      where: { email: userEmail },
     })
-    return response.code(201).send(allUsers)
+    return response.code(201).send(user)
   } catch (err) {
     if (err) {
       console.log(err)

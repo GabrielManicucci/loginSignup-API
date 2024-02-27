@@ -1,6 +1,10 @@
 import Fastify from 'fastify'
 
-import { GetAllUsers, GetUSer, Register } from './controllers/user.controlerr'
+import {
+  GetAllUsers,
+  GetUSer,
+  RegisterUser,
+} from './controllers/user.controlerr'
 
 export const app = Fastify()
 
@@ -8,4 +12,4 @@ app.get('/getUsers', GetAllUsers)
 
 app.get('/getUser/:email', GetUSer)
 
-app.post('/signup', Register)
+app.post('/signup', RegisterUser)

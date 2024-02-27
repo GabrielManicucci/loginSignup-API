@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-export const RegisterbodySchema = z.object({
+export const registerbodySchema = z.object({
   fullName: z.string(),
   userName: z.string(),
   cpf: z.string(),
