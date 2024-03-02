@@ -1,6 +1,6 @@
 import { prisma } from '@/lib/prisma'
-import { registerbodySchema } from '@/types/user'
-import { hash } from 'bcrypt'
+import { loginBodySchema, registerbodySchema } from '../schemas/user.schema'
+import { hash, compare } from 'bcrypt'
 import { FastifyReply, FastifyRequest } from 'fastify'
 
 export async function RegisterUser(
@@ -10,14 +10,6 @@ export async function RegisterUser(
   const requestUserData = registerbodySchema.parse(request.body)
 
   try {
-    const existingUser = await prisma.user.findUnique({
-      where: {
-        fullName: requestUserData.fullName,
-      },
-    })
-    if (existingUser)
-      return response.code(409).send({ error: 'Esse nome completo já existe' })
-
     const existingEmail = await prisma.user.findUnique({
       where: {
         email: requestUserData.email,
@@ -58,18 +50,42 @@ export async function GetAllUsers(
   }
 }
 
-export async function GetUSer(request: FastifyRequest, response: FastifyReply) {
-  const userEmail = request.params.email
+export async function GetUser(request: FastifyRequest, response: FastifyReply) {
+  console.log(request.user)
+  const { sub } = request.user
 
   try {
-    const user = await prisma.user.findUnique({
-      where: { email: userEmail },
+    const existingUser = await prisma.user.findUnique({
+      where: { id: sub },
     })
-    return response.code(201).send(user)
+
+    return response.code(201).send(existingUser)
   } catch (err) {
-    if (err) {
-      console.log(err)
-      return response.code(404).send({ error: `${err}` })
-    }
+    console.log(err)
+    return response.code(404).send({ error: `${err}` })
+  }
+}
+
+export async function Login(request: FastifyRequest, response: FastifyReply) {
+  const { email, password } = loginBodySchema.parse(request.body)
+
+  try {
+    const existingUser = await prisma.user.findUnique({
+      where: { email },
+    })
+    if (!existingUser)
+      return response.code(404).send({ error: 'Usuário inexistente' })
+
+    const comparePassword = await compare(password, existingUser.password)
+
+    if (!comparePassword)
+      return response.code(404).send({ error: 'Senha não compatível' })
+
+    const token = await response.jwtSign({}, { sign: { sub: existingUser.id } })
+
+    return response.code(201).send({ token })
+  } catch (err) {
+    console.log(err)
+    return response.code(404).send({ error: err })
   }
 }
