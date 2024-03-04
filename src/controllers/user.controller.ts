@@ -89,3 +89,35 @@ export async function Login(request: FastifyRequest, response: FastifyReply) {
     return response.code(404).send({ error: err })
   }
 }
+
+export async function updateUser(
+  request: FastifyRequest,
+  response: FastifyReply,
+) {
+  const { id } = request.params
+  const { name, email, cpf, password } = registerbodySchema.parse(request.body)
+
+  try {
+    const updatedUser = await prisma.user.update({
+      where: { id },
+      data: { name, email, cpf, password },
+    })
+
+    return response.code(200).send(updatedUser)
+  } catch (err) {
+    return response.code(404).send({ error: err })
+  }
+}
+
+export async function DeleteUserAccount(
+  request: FastifyRequest,
+  response: FastifyReply,
+) {
+  try {
+    const { sub } = await request.jwtDecode()
+    const deletedUser = await prisma.user.delete({ where: { id: sub } })
+    return response.code(200).send(deletedUser)
+  } catch (err) {
+    return response.code(404).send({ error: err })
+  }
+}

@@ -14,8 +14,8 @@
 - [ x ] Must be able to get all users
 - [ x ] User can login on your session
 - [ x ] Must be able to get user profile in session
-- [ ] User can edit your profile datas
-- [ ] User can delete your account
+- [ x ] User can edit your profile datas
+- [ x ] User can delete your account
 
 ## Business Rules
 
