@@ -12,7 +12,12 @@ export const loginBodySchema = z.object({
   email: z.string().email(),
 })
 
-export type User = {
-  sub: string
-  iat: string
-}
+export const updateEmailSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(8),
+})
+
+export const updatePaswordSchema = z.object({
+  newPassword: z.string().min(8),
+  password: z.string().min(8),
+})

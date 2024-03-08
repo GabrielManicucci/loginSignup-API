@@ -1,11 +1,14 @@
 import Fastify, { FastifyReply, FastifyRequest } from 'fastify'
 import fjwt from '@fastify/jwt'
+import cors from '@fastify/cors'
 import {
   DeleteUserAccount,
   GetAllUsers,
   GetUser,
   Login,
   RegisterUser,
+  UpdateEmail,
+  UpdatePassword,
   updateUser,
 } from './controllers/user.controller'
 
@@ -22,6 +25,8 @@ app.decorate(
   },
 )
 
+app.register(cors, { origin: 'http://localhost:3000' })
+
 app.register(fjwt, { secret: 'LoginSignupAPI' })
 
 app.get('/getUsers', GetAllUsers)
@@ -32,6 +37,10 @@ app.post('/signup', RegisterUser)
 
 app.post('/login', Login)
 
-app.patch('/user/:id', { onRequest: [app.authenticate] }, updateUser)
+app.patch('/updateUser', { onRequest: [app.authenticate] }, updateUser)
 
 app.delete('/delete', { onRequest: [app.authenticate] }, DeleteUserAccount)
+
+app.post('/updateEmail', { onRequest: [app.authenticate] }, UpdateEmail)
+
+app.post('/updatePassword', { onRequest: [app.authenticate] }, UpdatePassword)

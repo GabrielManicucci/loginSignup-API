@@ -19,9 +19,9 @@
 
 ## Business Rules
 
-- [ x ] cpf must be encrypted and saved in database
 - [ x ] Can't have accounts with the same email
-
+- [ ] Can´t have accounts with the same CPF
+ 
 ## Non-functional requirement
 
 - [ x ] User password must be encrypted on the signup time
