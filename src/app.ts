@@ -31,7 +31,7 @@ app.register(fjwt, { secret: 'LoginSignupAPI' })
 
 app.get('/getUsers', GetAllUsers)
 
-app.get('/getUser/:email', { onRequest: [app.authenticate] }, GetUser)
+app.get('/getUser', { onRequest: [app.authenticate] }, GetUser)
 
 app.post('/signup', RegisterUser)
 
@@ -41,6 +41,6 @@ app.patch('/updateUser', { onRequest: [app.authenticate] }, updateUser)
 
 app.delete('/delete', { onRequest: [app.authenticate] }, DeleteUserAccount)
 
-app.post('/updateEmail', { onRequest: [app.authenticate] }, UpdateEmail)
+app.patch('/updateEmail', { onRequest: [app.authenticate] }, UpdateEmail)
 
-app.post('/updatePassword', { onRequest: [app.authenticate] }, UpdatePassword)
+app.patch('/updatePassword', { onRequest: [app.authenticate] }, UpdatePassword)

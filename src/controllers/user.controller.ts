@@ -24,6 +24,14 @@ export async function RegisterUser(
     if (existingEmail)
       return response.code(409).send({ error: 'Esse email já existe' })
 
+    const existingCpf = await prisma.user.findUnique({
+      where: {
+        cpf: requestUserData.cpf,
+      },
+    })
+    if (existingCpf)
+      return response.code(409).send({ error: 'Esse cpf já existe' })
+
     const hashedPassword = await hash(requestUserData.password, 6)
 
     const newUser = await prisma.user.create({
@@ -86,7 +94,14 @@ export async function GetUser(request: FastifyRequest, response: FastifyReply) {
       where: { id: sub },
     })
 
-    return response.code(201).send(existingUser)
+    const returnUser = {
+      name: existingUser?.name,
+      email: existingUser?.email,
+      cpf: existingUser?.cpf,
+      password: existingUser?.password,
+    }
+
+    return response.code(201).send(returnUser)
   } catch (err) {
     console.log(err)
     return response.code(404).send({ error: `${err}` })
@@ -147,12 +162,19 @@ export async function UpdateEmail(
     if (existinEmail)
       return response.code(404).send({ error: 'Este email já existe' })
 
-    const newEmailUser = await prisma.user.update({
+    const newUser = await prisma.user.update({
       where: { id: sub },
       data: { email },
     })
 
-    return response.code(200).send(newEmailUser)
+    const returnUser = {
+      name: newUser.name,
+      email: newUser.email,
+      cpf: newUser.cpf,
+      password: newUser.password,
+    }
+
+    return response.code(200).send(returnUser)
   } catch (error) {
     return response.code(409).send(error)
   }
